@@ -33,5 +33,5 @@ jobs:
   release:
     name: Release
     needs: [ conclusion ]
-    uses: extrapreneur/eo-utility/.github/workflows/semantic-release.yml@main
+    uses: ./.github/workflows/semantic-release.yml
     secrets: inherit
