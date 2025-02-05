@@ -4,7 +4,7 @@ run-name: '🚀 Creating release for ${{ github.ref }}'
 
 on: 
   workflow_run:
-    workflows: ['Deploy']
+    workflows: ['Deployment']
     types:
       - completed
 
