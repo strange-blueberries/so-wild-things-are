@@ -1,0 +1,50 @@
+name: Application
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment, e.g. feature, production' 
+        required: true
+        type: string
+      repo-environment:
+        required: true
+        type: string
+
+jobs:
+  tests:
+    uses: ./.github/workflows/tests.yml
+    with:
+      environment: ${{ inputs.environment }}
+
+  tests-successful:
+    needs: [ tests ]
+    if: ${{ always() && needs.tests.result == 'success' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Everything is fine
+        run: |
+          echo "Everything is fine"
+          exit 0
+
+  tests-failure:
+    needs: [ tests ]
+    runs-on: ubuntu-24.04
+    if: ${{ always() && needs.tests.result == 'failure' }}
+    continue-on-error: true
+    steps:
+      - name: Everything is is NOT fine
+        run: |
+          echo "Everything is is NOT fine"
+          exit 1
+
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    needs: [ tests-successful ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build application
+        run: |
+          REPO_ENVIRONMENT="${{ inputs.repo-environment }}"
+          echo "Building application in $REPO_ENVIRONMENT environment"

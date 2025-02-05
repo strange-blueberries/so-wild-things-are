@@ -1,0 +1,23 @@
+name: Feature
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - main
+      - release
+
+jobs:
+  setup:
+    name: Setup
+    uses: ./.github/workflows/setup.yml
+    with:
+      environment: 'development'
+
+  application:
+    name: Development
+    needs: [ setup ]
+    uses: ./.github/workflows/application.yml
+    with:
+      repo-environment: ${{ needs.setup.outputs.repo-environment }}
+      environment: 'development'

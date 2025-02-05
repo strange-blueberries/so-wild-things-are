@@ -1,0 +1,37 @@
+name: Release
+
+run-name: '🚀 Creating release for ${{ github.ref }}'
+
+on: 
+  workflow_run:
+    workflows: ['Deploy']
+    types:
+      - completed
+
+jobs:
+  conclusion:
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Conclusion
+      run: |
+        if [[ ${{ github.event.workflow_run.conclusion }} == 'success' ]]; then
+          echo "Workflow succeeded"
+          exit 0
+        else
+          echo "
+          ### 🚫 Deployment Failed!
+
+          **See job:**
+          | Name | Workflow | Run ID | Environment |
+          | --- | --- | --- | --- |
+          | ${{ github.event.repository.name }} | [${{ github.repository }}/actions/workflows/production.yml](${{ github.event.workflow_run.html_url }}) | ${{ github.event.workflow_run.run_number }} | prod |
+          " >> $GITHUB_STEP_SUMMARY
+          echo "Workflow failed"
+          exit 1
+        fi
+
+  release:
+    name: Release
+    needs: [ conclusion ]
+    uses: extrapreneur/eo-utility/.github/workflows/semantic-release.yml@main
+    secrets: inherit

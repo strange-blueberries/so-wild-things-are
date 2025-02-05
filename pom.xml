@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.strange.com</groupId>
+    <artifactId>wild-things</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <!-- Project settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <java.version>17</java.version>
+
+        <!-- Dependencies -->
+        <protobuf-java.version>4.29.3</protobuf-java.version>
+        <!-- Test dependencies -->
+        <joda-time.version>2.10.1</joda-time.version>
+        <!-- Plugins -->
+        <maven-compiler-plugin.version>3.11.4</maven-compiler-plugin.version>
+        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <maven-scm-plugin.version>1.11.1</maven-scm-plugin.version>
+        <protoc-jar-maven-plugin.version>3.6.0.1</protoc-jar-maven-plugin.version>
+        <exists-maven-plugin.version>0.0.6</exists-maven-plugin.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${protobuf-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java-util</artifactId>
+            <version>${protobuf-java.version}</version>
+        </dependency>
+    </dependencies>
+
+    <distributionManagement>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.os72</groupId>
+                <artifactId>protoc-jar-maven-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>protoc.main</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <protocVersion>4.27.0</protocVersion>
+                            <addSources>main</addSources>
+                            <includeMavenTypes>direct</includeMavenTypes>
+                            <includeDirectories>
+                                <include>src/main/protobuf</include>
+                            </includeDirectories>
+                            <inputDirectories>
+                                <include>src/main/protobuf</include>
+                            </inputDirectories>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

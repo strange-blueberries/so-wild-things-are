@@ -1,0 +1,66 @@
+name: Setup
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment, e.g. feature, prod' 
+        required: true
+        type: string
+    outputs:
+       repo-environment:
+        description: 'Repository environment name, e.g. [repo-name]-feat-[branch-name]. Automatically generated.'
+        value: ${{ jobs.variables.outputs.repo-environment }}
+
+jobs:
+  variables:
+    name: Set variables
+    runs-on: ubuntu-24.04
+    outputs:
+      repo-environment: ${{ steps.set-variables.outputs.github_env_name }}
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Github Slugs
+        uses: rlespinasse/github-slug-action@v5.0.0
+      - name: Set name
+        id: set-name
+        run: |
+          if [ -z "${{ inputs.environment }}" ]; then
+            echo "Environment is not set"
+            exit 1
+          else
+            if [ "${{ inputs.environment }}" == feature ]; then
+              NAME="${{ github.event.repository.name }}-${{ env.GITHUB_EVENT_REF_SLUG_URL }}"
+              echo "Setting feature environment to: $NAME"
+              echo "output_string=$NAME" >> $GITHUB_OUTPUT
+            fi
+            if [ "${{ inputs.environment }}" == stage ]; then
+              NAME="${{ github.event.repository.name }}-stage"
+              echo "Setting stage environment to: $NAME"
+              echo "output_string=$NAME" >> $GITHUB_OUTPUT
+            fi
+            if [ "${{ inputs.environment }}" == prod ]; then
+              NAME="${{ github.event.repository.name }}"
+              echo "Setting prod environment to: $NAME"
+              echo "output_string=$NAME" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Truncate String
+        uses: 2428392/gh-truncate-string-action@v1.4.1
+        id: truncated-string
+        with:
+          stringToTruncate: ${{ steps.set-name.outputs.output_string }}
+          maxLength: 63
+          removeDanglingCharacters: '-'
+      - name: Set Variables
+        id: set-variables
+        run: |
+          PROJECT_NAME="${{ steps.truncated-string.outputs.string }}"
+          ENVIRONMENT="${{ inputs.environment }}"
+          echo "# :octocat:Workflow configuration" >> $GITHUB_STEP_SUMMARY
+          echo "GitHub environment: **$ENVIRONMENT**" >> $GITHUB_STEP_SUMMARY
+          echo "Repo environment: **$PROJECT_NAME**" >> $GITHUB_STEP_SUMMARY
+          echo "github_env_name=$PROJECT_NAME" >> $GITHUB_OUTPUT

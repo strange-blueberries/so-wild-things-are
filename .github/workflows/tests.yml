@@ -1,0 +1,53 @@
+name: 🧪 Tests
+
+run-name: 'Testing ${{ github.ref }}, calculating results...wait!..."BRRRR!"'
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment, e.g. feature, production' 
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+  checks: write
+  pull-requests: write
+  security-events: write
+  id-token: write
+
+jobs:
+  security-tests:
+    name: Security Tests
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run security tests
+        run: |
+          echo "Running security tests in ${{ inputs.environment }} environment"
+          exit 0
+
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run performance tests
+        run: |
+          echo "Running performance tests in ${{ inputs.environment }} environment"
+          exit 0
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run integration tests
+        run: |
+          echo "Running integration tests in ${{ inputs.environment }} environment"
+          exit 0

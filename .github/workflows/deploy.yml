@@ -1,0 +1,36 @@
+name: Deployment
+
+run-name: '🚀 Deploying ${{ github.ref }} in prod environment'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    name: Setup
+    uses: ./.github/workflows/setup.yml
+    with:
+      environment: 'production'
+
+  application:
+    name: Production
+    needs: [ setup ]
+    uses: ./.github/workflows/application.yml
+    with:
+      repo-environment: ${{ needs.setup.outputs.repo-environment }}
+      environment: 'production'
+
+  deploy:
+    name: Deployment
+    runs-on: ubuntu-24.04
+    needs: [ setup, application ]
+    environment: 'production'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to environment
+        run: |
+          REPO_ENVIRONMENT="${{ needs.setup.outputs.repo-environment }}"
+          echo "# 🚀 Deployment successful" >> $GITHUB_STEP_SUMMARY
+          echo "Repo environment: **$REPO_ENVIRONMENT**" >> $GITHUB_STEP_SUMMARY
+          echo "**$REPO_ENVIRONMENT** --> Production" >> $GITHUB_STEP_SUMMARY
+          echo "github_env_name=$REPO_ENVIRONMENT" >> $GITHUB_OUTPUT
