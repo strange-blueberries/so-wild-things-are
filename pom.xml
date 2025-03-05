@@ -16,7 +16,7 @@
         <java.version>17</java.version>
 
         <!-- Dependencies -->
-        <protobuf-java.version>4.29.3</protobuf-java.version>
+        <protobuf-java.version>4.30.0</protobuf-java.version>
         <!-- Test dependencies -->
         <joda-time.version>2.10.1</joda-time.version>
         <!-- Plugins -->
