@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Github Slugs
-        uses: rlespinasse/github-slug-action@v5.0.0
+        uses: rlespinasse/github-slug-action@v5.1.0
       - name: Set name
         id: set-name
         run: |
