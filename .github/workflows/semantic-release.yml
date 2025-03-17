@@ -63,7 +63,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Slugify github variables
-        uses: rlespinasse/github-slug-action@v5.0.0
+        uses: rlespinasse/github-slug-action@v5.1.0
       - name: Semantic Release
         id: semantic-release
         uses: cycjimmy/semantic-release-action@v4
